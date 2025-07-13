@@ -1,0 +1,20 @@
+// Основной процесс
+    async function runAutomation() {
+        try {
+            log("Скрипт запущен.");
+            await waitForPageLoad();
+
+            // Ожидание после загрузки
+            const waitAfterLoad = random(CONFIG.DELAYS.AFTER_LOAD.min, CONFIG.DELAYS.AFTER_LOAD.max);
+            log(`Ожидание ${waitAfterLoad} секунд после загрузки.`);
+            await new Promise(r => setTimeout(r, waitAfterLoad * 1000));
+
+            // Поиск и проверка видимости кнопки CLICK
+            let rollButton;
+            try {
+                rollButton = await waitForVisibleElement(CONFIG.SELECTORS.CLICK_BUTTON);
+            } catch (e) {
+                log("Кнопка ROLL не найдена или не видима. Перезапуск через 10 минут.", 'error');
+                setTimeout(runAutomation, 10000); // 10 минут
+                return;
+            }
